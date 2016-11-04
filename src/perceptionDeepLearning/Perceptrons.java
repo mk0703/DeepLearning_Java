@@ -19,6 +19,7 @@ public class Perceptrons {
 		int classified = 0;
 		double c = 0.;
 
+		//データが正しく分類されてるかチェック
 		for(int i =0 ; i< nIn ; i++){
 			c += w[i] * x[i] * t;
 		}
@@ -42,6 +43,7 @@ public class Perceptrons {
 			preActivation += w[i] * x[i];
 		}
 
+		//utill内のstep関数を使用
 		return ActivatonFunctions.step(preActivation);
 	}
 
@@ -49,20 +51,21 @@ public class Perceptrons {
 
 		final Random rng = new Random(1234);
 
-		final int train_N = 1000;
-		final int test_N = 200;
-		final int nIn = 2;
+		final int train_N = 1000;//トレーニングデータ数
+		final int test_N = 200;//テストデータ数
+		final int nIn = 2;//ニューロン数
 
-		double[][] train_X = new double[train_N][nIn];
-		int[] train_T = new int[train_N];
+		double[][] train_X = new double[train_N][nIn];//トレーニングデータ
+		int[] train_T = new int[train_N];//データラベル
 
-		double[][] test_X = new double[test_N][nIn];
-		int[] test_T = new int[test_N];
-		int[] predicted_T = new int[test_N];
+		double[][] test_X = new double[test_N][nIn];//テストデータ
+		int[] test_T = new int[test_N];//データラベル
+		int[] predicted_T = new int[test_N];//予測結果
 
-		final int epochs = 2000;
-		final double rate = 1.0;
+		final int epochs = 2000;//トレーニングの上限数
+		final double rate = 1.0;//学習率
 
+		//サンプルデータの定義(正規分布)
 		GaussianDistribution g1 = new GaussianDistribution(-2.0 , 1.0 , rng);
 		GaussianDistribution g2 = new GaussianDistribution(2.0 , 1.0 , rng);
 
@@ -102,6 +105,7 @@ public class Perceptrons {
 				classified += classifier.train(train_X[i], train_T[i], rate);
 			}
 
+			//全データが分類されたら終了
 			if(classified == train_N) {
 				break;
 			}
@@ -114,6 +118,7 @@ public class Perceptrons {
 		}
 
 		for(int i = 0; i < test_N; i++) {
+			//分類結果を格納
 			predicted_T[i] = classifier.predict(test_X[i]);
 		}
 
@@ -149,14 +154,16 @@ public class Perceptrons {
 			}
 		}
 
+		//各確率を計算
 		accuracy /= test_N;
 		precision /= confusionMatrix[0][0] + confusionMatrix[1][0];
 		recall /= confusionMatrix[0][0] + confusionMatrix[0][1];
 
+		//結果の表示
 		System.out.println("+++++Perceptrons Evaluation+++++");
-		System.out.printf("Accuracy:   %.1f %%\n" , accuracy * 100);
-		System.out.printf("Precision:  %.1f %%\n" , precision * 100);
-		System.out.printf("Recall:     %.1f %%\n" , recall * 100);
+		System.out.printf("Accuracy(正解率):   %.1f %%\n" , accuracy * 100);
+		System.out.printf("Precision(精度):    %.1f %%\n" , precision * 100);
+		System.out.printf("Recall(再現率):     %.1f %%\n" , recall * 100);
 	}
 
 }
